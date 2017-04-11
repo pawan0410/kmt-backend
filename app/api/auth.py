@@ -9,6 +9,8 @@ from app.models.user import UserModel
 from flask import current_app
 from flask import request
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt_identity
 
 
 class Auth(Resource):
@@ -22,7 +24,7 @@ class Auth(Resource):
         except KeyError:
             email, password = None, None
 
-        user = UserModel.query.filter(UserModel.email == email, UserModel.password == password).first()
+        user = UserModel.query.filter(UserModel.email == email, UserModel.password_hash == password).first()
 
         if not user:
             return {'error': 'Invalid email/password combination.'}, 401
@@ -35,5 +37,13 @@ class Auth(Resource):
         }
 
         return {'token': create_access_token(identity=response)}, 200
+
+
+class Validate(Resource):
+    @jwt_required
+    def post(self):
+        current_user = get_jwt_identity()
+        if not current_user:
+            return {'error': 'Invalid authorization token'}, 401
 
 

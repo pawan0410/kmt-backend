@@ -1,9 +1,8 @@
 from app.extension import db
 
 
-class UserModel(db.Model):
-
-    __tablename__ = 'user'
+class DocumentModel(db.Model):
+    __tablename__ = 'document'
 
     id = db.Column(db.Integer , primary_key=True)
     create_uid = db.Column(db.Integer)
@@ -11,8 +10,5 @@ class UserModel(db.Model):
     update_uid = db.Column(db.Integer)
     update_time = db.Column(db.DateTime)
     name = db.Column(db.String(255))
-    email = db.Column(db.String(255))
-    password_hash = db.Column(db.String(255))
-
-
-
+    own_uid = db.Column(db.Integer)
+    delta = db.Column(db.LargeBinary)
