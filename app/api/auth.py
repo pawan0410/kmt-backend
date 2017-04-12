@@ -45,5 +45,7 @@ class Validate(Resource):
         current_user = get_jwt_identity()
         if not current_user:
             return {'error': 'Invalid authorization token'}, 401
+        else:
+            return {'token': create_access_token(identity=current_user)}, 200
 
 
