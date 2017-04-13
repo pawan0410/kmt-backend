@@ -1,12 +1,13 @@
-import json
 from datetime import datetime
 from flask import jsonify
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+import sqlalchemy
 from app.models.document import DocumentModel
 from app.extension import db
+from app.google import upload
 
 
 class DocumentsList(Resource):
@@ -35,6 +36,35 @@ class DocumentsList(Resource):
                 'name': doc.name,
             } for doc in documents]
         return jsonify(documents=results)
+
+    @jwt_required
+    def post(self):
+        current_user = get_jwt_identity()
+        if not current_user:
+            return {'error': 'Invalid authorization token'}, 401
+
+        user_id = current_user['uid']
+        fields = request.json
+        name, keyword = fields['name'], fields['keyword']
+
+        if not name:
+            return {'error': 'Please provide a document name'}, 400
+
+        document = DocumentModel(
+            name=name[0:50],
+            create_uid=user_id,
+            create_time=datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+            update_uid =user_id,
+            update_time=datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+            own_uid = user_id
+        )
+        try:
+            db.session.add(document)
+            db.session.commit()
+        except sqlalchemy.exc.ProgrammingError:
+            return {'error': 'Document was not created.'}, 400
+
+        return [{'id': document.id, 'keyword': keyword[0:20]}], 200
 
 
 class Documents(Resource):
@@ -106,6 +136,57 @@ class Documents(Resource):
             'delta': delta
         }
         return jsonify(documents=[results])
+
+    @jwt_required
+    def delete(self, id):
+        current_user = get_jwt_identity()
+        if not current_user:
+            return {'error': 'Invalid authorization token'}, 401
+
+        if not id:
+            return {'error': 'Invalid document ID'}, 400
+        user_id = current_user['uid']
+        document = DocumentModel.query.get(id)
+
+        if not document or document.own_uid != user_id:
+            return {'error': 'Invalid document ID'}, 400
+
+        try:
+            db.session.delete(document)
+            db.session.commit()
+        except sqlalchemy.exc.ProgrammingError:
+            return {'error': 'Document was not deleted.'}, 400
+
+        return []
+
+
+class Export(Resource):
+
+    @jwt_required
+    def post(self, id):
+        current_user = get_jwt_identity()
+        if not current_user:
+            return {'error': 'Invalid authorization token'}, 401
+
+        if not id:
+            return {'error': 'Invalid document ID'}, 400
+
+        user_id = current_user['uid']
+
+        document = DocumentModel.query.get(id)
+
+        if not document or document.own_uid != user_id:
+            return {'error': 'Invalid document ID'}, 400
+
+        html_content = request.json['content']
+
+        file_id = upload(document.name, html_content)
+
+
+        return {'file_id': file_id}
+
+
+
 
 
 

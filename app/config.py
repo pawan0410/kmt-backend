@@ -11,6 +11,7 @@ class Config:
     CREDENTIALS_PATH = BASE_DIR + '/drive/drive-credentials.json'
     CLIENT_SECRET_PATH = BASE_DIR + '/google_client_secret.json'
     DRIVE_FOLDER_ID = '0B9DrzugQJ4wAakRBbFNjbTlkcFE'
+    SCOPES = 'https://www.googleapis.com/auth/drive.metadata.readwrite'
 
 
 class Development(Config):

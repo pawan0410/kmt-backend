@@ -15,6 +15,7 @@ from app.api.auth import Auth
 from app.api.auth import Validate
 from app.api.documents import Documents
 from app.api.documents import DocumentsList
+from app.api.documents import Export
 
 
 def application(config):
@@ -34,6 +35,7 @@ def application(config):
     api.add_resource(Validate, '/v1/auth/validate')
     api.add_resource(DocumentsList, '/v1/documents/')
     api.add_resource(Documents, '/v1/documents/<int:id>')
+    api.add_resource(Export, '/v1/documents/export/<int:id>')
 
     # Register Extensions
     db.init_app(app)
