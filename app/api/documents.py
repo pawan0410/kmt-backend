@@ -1,13 +1,19 @@
+"""
+© AIG Business. See LICENSE file for full copyright & licensing details.
+"""
+
 from datetime import datetime
+
 from flask import jsonify
 from flask import request
 from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 import sqlalchemy
+
 from app.models.document import DocumentModel
 from app.extension import db
-from app.google import upload
+from app.services.google import GoogleDrive
 
 
 class DocumentsList(Resource):
@@ -168,6 +174,7 @@ class Export(Resource):
         if not current_user:
             return {'error': 'Invalid authorization token'}, 401
 
+
         if not id:
             return {'error': 'Invalid document ID'}, 400
 
@@ -180,8 +187,9 @@ class Export(Resource):
 
         html_content = request.json['content']
 
-        file_id = upload(document.name, html_content)
+        folder_id = GoogleDrive.create_folder(current_user['name'])
 
+        file_id = GoogleDrive.create_file(document.name, html_content, folder_id)
 
         return {'file_id': file_id}
 
