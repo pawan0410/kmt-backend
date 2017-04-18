@@ -19,7 +19,7 @@ class Development(Config):
 
 class Production(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'mysql://root@127.0.0.1/kmt_backend'
+    SQLALCHEMY_DATABASE_URI = 'mysql://debian-sys-maint:7TRmZyxh3geOystg@127.0.0.1/kmt_backend'
 
 
 app_config = {
