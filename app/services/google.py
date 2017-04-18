@@ -61,7 +61,7 @@ class GoogleDrive(object):
             'name': name,
             'parents': [folder_id]
         }
-        html_file = '%s/temp_uploads/%s.html' % (current_app.config['BASE_DIR'], name.replace(' ', '_'))
+        html_file = '{0}/temp_uploads/{1}.html'.format(current_app.config['BASE_DIR'], name.replace(' ', '_'))
 
         os.system('touch %s' % html_file)
 
