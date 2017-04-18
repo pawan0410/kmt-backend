@@ -63,8 +63,6 @@ class GoogleDrive(object):
         }
         html_file = '{0}/temp_uploads/{1}.html'.format(current_app.config['BASE_DIR'], name.replace(' ', '_'))
 
-        os.system('touch %s' % html_file)
-
         current_app.logger.info("The HTML File %s " % html_file)
 
         with open(html_file, 'w+') as fp:
@@ -77,8 +75,7 @@ class GoogleDrive(object):
         file = GoogleDrive.service().files().create(body=file_metadata,
                                                     media_body=media,
                                                     fields='id').execute()
-        """
+
         os.remove(html_file)
-        """
 
         return file.get('id')
