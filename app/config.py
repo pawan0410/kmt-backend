@@ -14,7 +14,7 @@ class Config:
 
 class Development(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI='mysql://root:root@127.0.0.1/kmt_backend'
+    SQLALCHEMY_DATABASE_URI='mysql://root:maria@aig2016@192.168.8.37/kmt_backend'
 
 
 class Production(Config):
