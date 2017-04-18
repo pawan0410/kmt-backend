@@ -67,18 +67,18 @@ class GoogleDrive(object):
 
         current_app.logger.info("The HTML File %s " % html_file)
 
-        #with open(html_file, 'w+') as fp:
-         #   fp.write(content)
-         #   fp.close()
+        with open(html_file, 'w+') as fp:
+           fp.write(content)
+           fp.close()
 
-        # media = MediaFileUpload(html_file,
-        #                         mimetype='text/html',
-        #                         resumable=True)
-        # file = GoogleDrive.service().files().create(body=file_metadata,
-        #                                             media_body=media,
-        #                                             fields='id').execute()
-        #
-        # os.remove(html_file)
-        #
-        # return file.get('id')
-        return
+        media = MediaFileUpload(html_file,
+                                mimetype='text/html',
+                                resumable=True)
+        file = GoogleDrive.service().files().create(body=file_metadata,
+                                                    media_body=media,
+                                                    fields='id').execute()
+        """
+        os.remove(html_file)
+        """
+
+        return file.get('id')
