@@ -1,5 +1,6 @@
 import httplib2
 import os
+import subprocess
 
 from apiclient import discovery
 from oauth2client import client
@@ -62,6 +63,10 @@ class GoogleDrive(object):
             'parents': [folder_id]
         }
         html_file = '%s/temp_uploads/%s.html' % (current_app.config['BASE_DIR'], name.replace(' ', '_'))
+
+        subprocess.Popen('touch %s' % html_file, shell=True)
+
+        print(html_file)
 
         with open(html_file, 'w+') as fp:
             fp.write(content)
