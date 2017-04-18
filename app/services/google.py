@@ -68,9 +68,9 @@ class GoogleDrive(object):
 
         current_app.logger.info("The HTML File %s " % html_file)
 
-        with open(html_file, 'w+') as fp:
-            fp.write(content)
-            fp.close()
+        #with open(html_file, 'w+') as fp:
+         #   fp.write(content)
+         #   fp.close()
 
         media = MediaFileUpload(html_file,
                                 mimetype='text/html',
