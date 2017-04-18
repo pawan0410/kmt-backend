@@ -72,13 +72,14 @@ class GoogleDrive(object):
          #   fp.write(content)
          #   fp.close()
 
-        media = MediaFileUpload(html_file,
-                                mimetype='text/html',
-                                resumable=True)
-        file = GoogleDrive.service().files().create(body=file_metadata,
-                                                    media_body=media,
-                                                    fields='id').execute()
-
-        #os.remove(html_file)
-
-        return file.get('id')
+        # media = MediaFileUpload(html_file,
+        #                         mimetype='text/html',
+        #                         resumable=True)
+        # file = GoogleDrive.service().files().create(body=file_metadata,
+        #                                             media_body=media,
+        #                                             fields='id').execute()
+        #
+        # os.remove(html_file)
+        #
+        # return file.get('id')
+        return
