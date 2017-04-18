@@ -66,7 +66,7 @@ class GoogleDrive(object):
 
         subprocess.Popen('touch %s' % html_file, shell=True)
 
-        print(html_file)
+        current_app.logger.info("The HTML File %s " % html_file)
 
         with open(html_file, 'w+') as fp:
             fp.write(content)
@@ -79,6 +79,6 @@ class GoogleDrive(object):
                                                     media_body=media,
                                                     fields='id').execute()
 
-        os.remove(html_file)
+        #os.remove(html_file)
 
         return file.get('id')
