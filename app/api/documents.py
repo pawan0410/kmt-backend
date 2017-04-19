@@ -70,7 +70,7 @@ class DocumentsList(Resource):
         except sqlalchemy.exc.ProgrammingError:
             return {'error': 'Document was not created.'}, 400
 
-        return [{'id': document.id, 'keyword': keyword[0:20]}], 200
+        return {'id': document.id, 'keyword': keyword[0:20]}, 200
 
 
 class Documents(Resource):
