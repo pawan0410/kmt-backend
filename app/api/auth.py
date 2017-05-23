@@ -14,7 +14,6 @@ from flask_jwt_extended import get_jwt_identity
 
 
 class Auth(Resource):
-
     def post(self):
         data = request.json
 
@@ -43,6 +42,7 @@ class Validate(Resource):
     @jwt_required
     def post(self):
         current_user = get_jwt_identity()
+        print(current_user)
         if not current_user:
             return {'error': 'Invalid authorization token'}, 401
         else:

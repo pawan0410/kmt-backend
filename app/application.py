@@ -18,6 +18,9 @@ from app.api.documents import DocumentsList
 from app.api.documents import Export
 from app.api.keywords import KeywordsList
 from app.api.keywords import KeywordsListPrefix
+from app.api.users import UserList
+from app.api.users import Users
+
 
 
 def application(config):
@@ -40,6 +43,8 @@ def application(config):
     api.add_resource(Export, '/v1/documents/export/<int:id>')
     api.add_resource(KeywordsListPrefix, '/v1/keywords/')
     api.add_resource(KeywordsList, '/v1/keywords/<string:keyword>')
+    api.add_resource(UserList,'/v1/users/')
+    api.add_resource(Users,'/v1/users/<int:id>')
 
     # Register Extensions
     db.init_app(app)

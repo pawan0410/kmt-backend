@@ -10,6 +10,9 @@ class Config:
     APPLICATION_NAME = 'Export KMT documents to Google Drive'
     CLIENT_SECRET_FILE = BASE_DIR + '/google_client_secret.json'
     SCOPES = 'https://www.googleapis.com/auth/drive.file'
+    LDAP_SERVER = 'ldap://192.168.8.2:389'
+    LDAP_USER = r'aig\administrator'
+    LDAP_PASSWORD = 'R@mayan1234'
 
 
 class Development(Config):
@@ -22,7 +25,22 @@ class Production(Config):
     SQLALCHEMY_DATABASE_URI = 'mysql://debian-sys-maint:7TRmZyxh3geOystg@127.0.0.1/kmt_backend'
 
 
+class Local(Config):
+    DEBUG = True
+    SQLALCHEMY_DATABASE_URI = 'mysql://root:root@127.0.0.1/kmt_backend'
+
+
+class CeleryConfig:
+    CELERY_BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+
+
+
+
+
 app_config = {
     'development': Development,
-    'production': Production
+    'production': Production,
+    'local': Local
 }
