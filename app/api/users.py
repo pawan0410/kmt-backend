@@ -83,7 +83,7 @@ class Users(Resource):
         results = [{
                        'name': user.name,
                        'email': user.email,
-                       'id': user.id
+                       'id': user.id,
                    }]
         return jsonify(users=results)
 
@@ -98,12 +98,13 @@ class Users(Resource):
             return []
 
         fields = request.json
-        name, email = fields['name'], fields['email']
+        name, email,password = fields['name'], fields['email'],fields['password']
 
         user.name = name
         user.email = email
         user.update_uid = current_user['uid']
         user.update_time = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+        user.password_hash = password
 
         db.session.add(user)
         db.session.commit()
