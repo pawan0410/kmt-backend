@@ -1,6 +1,10 @@
 import hashlib
 from datetime import datetime
 
+from flask_restful import Resource, Api, reqparse
+import werkzeug
+
+import os
 from flask import jsonify
 from flask import request
 from flask_restful import Resource
@@ -41,16 +45,27 @@ class UserList(Resource):
 
     @jwt_required
     def post(self):
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+        UPLOAD_PATH = os.path.join(
+            BASE_DIR,
+            'static',
+            'uploads'
+        )
+        ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
         current_user = get_jwt_identity()
         if not current_user:
             return {'error': 'Invalid authorization token'}, 401
 
         user_id = current_user['uid']
         fields = request.json
-        name, email = fields['name'], fields['email']
+        name, email,f_name = fields['name'], fields['email'] ,fields['f_name']
+        file = request.files['img']
+        file.save(UPLOAD_PATH, f_name)
 
         if not name:
             return {'error': 'Please provide a user name'}, 400
+
 
         user = UserModel(
             name=name,
@@ -59,7 +74,9 @@ class UserList(Resource):
             create_uid=user_id,
             create_time=datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
             update_uid=user_id,
-            update_time=datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+            update_time=datetime.today().strftime('%Y-%m-%d %H:%M:%S'),
+            profile_pic_path = UPLOAD_PATH
+
         )
         try:
             db.session.add(user)
@@ -67,7 +84,7 @@ class UserList(Resource):
         except sqlalchemy.exc.ProgrammingError:
             return {'error': 'User was not created.'}, 400
 
-        return {'id': user.id, 'email': email}, 200
+        return {'id': user.id, 'email': email }, 200
 
 
 class Users(Resource):
@@ -98,7 +115,7 @@ class Users(Resource):
             return []
 
         fields = request.json
-        name, email = fields['name'], fields['email']
+        name, email  = fields['name'], fields['email']
 
         user.name = name
         user.email = email
@@ -130,4 +147,6 @@ class Users(Resource):
             return {'error': 'User was not deleted.'}, 400
 
         return []
+
+
 

@@ -14,6 +14,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(255))
     password_hash = db.Column(db.String(255))
     department = db.Column(db.String(255))
+    profile_pic_path = db.Column(db.String)
 
 
 
