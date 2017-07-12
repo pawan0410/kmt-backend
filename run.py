@@ -1,6 +1,6 @@
 from app.application import application
 
-application = application('production')
+application = application('local')
 
 
 if __name__ == '__main__':

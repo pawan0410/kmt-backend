@@ -11,3 +11,5 @@ jwt = JWTManager()
 cors = CORS()
 task_server = Celery(__name__, broker=CeleryConfig.CELERY_BROKER_URL)
 task_server.config_from_object(CeleryConfig)
+
+

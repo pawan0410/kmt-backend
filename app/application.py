@@ -20,6 +20,7 @@ from app.api.keywords import KeywordsList
 from app.api.keywords import KeywordsListPrefix
 from app.api.users import UserList
 from app.api.users import Users
+from app.api.documents import DocumentsPermission
 
 
 
@@ -45,6 +46,7 @@ def application(config):
     api.add_resource(KeywordsList, '/v1/keywords/<string:keyword>')
     api.add_resource(UserList,'/v1/users/')
     api.add_resource(Users,'/v1/users/<int:id>')
+    api.add_resource(DocumentsPermission, '/v1/permissions/')
 
     # Register Extensions
     db.init_app(app)

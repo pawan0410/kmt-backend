@@ -1,6 +1,7 @@
 from app.extension import db
 
 
+
 class DocumentModel(db.Model):
     __tablename__ = 'document'
 
@@ -12,3 +13,4 @@ class DocumentModel(db.Model):
     name = db.Column(db.String(255))
     own_uid = db.Column(db.Integer)
     delta = db.Column(db.LargeBinary)
+

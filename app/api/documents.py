@@ -10,8 +10,10 @@ from flask_restful import Resource
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 import sqlalchemy
+from collections import defaultdict
 
 from app.models.document import DocumentModel
+from app.models.permission import PermissionModel
 from app.extension import db
 from app.services.google import GoogleDrive
 
@@ -24,6 +26,17 @@ class DocumentsList(Resource):
         if not current_user:
             return {'error': 'Invalid authorization token'}, 401
 
+        permissions = PermissionModel.query.all()
+        # print(permissions)
+
+        if not permissions:
+            return []
+        permission = defaultdict(list)
+        for p in permissions:
+            user_id = p.user_id
+            doc_id = p.doc_id
+            permission[user_id].append(doc_id)
+
         term = request.args.get('term')
 
         if term:
@@ -35,13 +48,16 @@ class DocumentsList(Resource):
         if not documents:
             return []
 
+        print(permission[current_user['uid']])
+
         results= [
             {
                 'id': doc.id,
                 'update_time': doc.update_time.strftime('%Y-%m-%d %H:%M:%S'),
                 'name': doc.name,
-            } for doc in documents]
+            } for doc in documents if doc.id in permission[current_user['uid']]]
         return jsonify(documents=results)
+
 
     @jwt_required
     def post(self):
@@ -73,6 +89,9 @@ class DocumentsList(Resource):
         return {'id': document.id, 'keyword': keyword[0:20]}, 200
 
 
+
+
+
 class Documents(Resource):
 
     @jwt_required
@@ -80,6 +99,7 @@ class Documents(Resource):
         current_user = get_jwt_identity()
         if not current_user:
             return {'error': 'Invalid authorization token'}, 401
+
 
         documents = DocumentModel.query.get(id)
 
@@ -192,6 +212,34 @@ class Export(Resource):
         file_id = GoogleDrive.create_file(document.name, html_content, folder_id)
 
         return {'file_id': file_id}
+
+
+class DocumentsPermission(Resource):
+
+
+    def post(self):
+        fields = request.json
+        doc_id = fields['doc_id']
+        user_id = fields['user_id']
+
+
+        for i in doc_id:
+            permission = PermissionModel(
+                doc_id=i,
+                user_id=user_id
+            )
+            try:
+                db.session.add(permission)
+                db.session.commit()
+            except sqlalchemy.exc.ProgrammingError:
+                return {'error': 'Please set permissions'}, 400
+
+        return {'success ' : True}, 200
+
+
+
+
+
 
 
 
