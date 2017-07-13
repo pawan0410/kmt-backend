@@ -50,7 +50,7 @@ def profile_upload():
     if file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS :
 
 
-        file.save(UPLOAD_PATH, file.filename)
-        return 'ok'
+        file.save(file_path, file.filename)
+        return 'Success'
     else :
         print('This file type is not supported')
